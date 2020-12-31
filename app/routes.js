@@ -2,6 +2,15 @@ var yahooService = require('../app/services/yahooService');
 var responseTransformer = require('../app/transformer/responseTransformer');
 
 module.exports = function (app) {
+  app.get('/market-summary', function (req, res) {
+    yahooService.getMarketSummary()
+      .then((data) => {
+        res.send(responseTransformer.transformMarketSummary(data));
+      }).catch((error) => {
+        res.send(responseTransformer.transformError(error));
+      });
+  });
+
   app.get('/:ticker', function (req, res) {
     const ticker = req.params.ticker;
     yahooService.getCurrentPrice(ticker)
