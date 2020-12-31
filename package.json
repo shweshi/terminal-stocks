@@ -1,6 +1,6 @@
 {
   "name": "terminal-stocks",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Fetch stock price information on terminal",
   "main": "index.js",
   "bin": {

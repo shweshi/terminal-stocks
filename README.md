@@ -27,7 +27,6 @@ $ curl https://terminal-stocks.herokuapp.com/historical/ITC.NS
 
 ### CLI Usage
 You can use the terminal-stocks command line interface (cli)
-[![NPM](https://nodei.co/npm/terminal-stocks.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/terminal-stocks)
 
 - install cli globaly
 ```sh
