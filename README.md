@@ -2,6 +2,8 @@
 
 terminal-stocks is a terminal based application that provide stock price information.
 
+Read more here: https://techaptitude.blogspot.com/2020/12/track-stock-market-information-right-in.html
+
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Current.png" />
 
 ### How to use
