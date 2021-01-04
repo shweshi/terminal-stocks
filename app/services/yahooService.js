@@ -4,43 +4,65 @@ const baseUrl = 'https://finance.yahoo.com/quote/';
 module.exports = {
   getCurrentPrice: getCurrentPrice,
   getHistoricalPrices: getHistoricalPrices,
-  getMarketSummary: getMarketSummary
+  getMarketSummary: getMarketSummary,
+  getChart: getChart
 };
 
-function getCurrentPrice(ticker) {
+function getChart(ticker) {
   return new Promise(function (resolve, reject) {
-    request(baseUrl + ticker + "/", function (err, res, body) {
-
+    request('https://query1.finance.yahoo.com/v8/finance/chart/' + ticker, function (err, res, body) {
       if (err) {
         reject(err);
       }
 
       try {
-        var price = getPrice(body, ticker);
-        var change = getChange(body, ticker);
-        var changePercent = getChangePercent(body, ticker);
-        var atDate = getAtDate(body, ticker);
-        var atTime = getAtTime(body, ticker);
-        var longName = getLongName(body, ticker);
-        var dayRange = getDayRange(body, ticker);
-        var fiftyTwoWeekRange = getFiftyTwoWeekRange(body, ticker);
-
-        resolve({
-          ticker,
-          longName,
-          price,
-          change,
-          changePercent,
-          atDate: new Date(atDate * 1000),
-          atTime,
-          dayRange,
-          fiftyTwoWeekRange,
-        });
-      } catch (err) {
-        reject(err)
+        const chartData = JSON.parse(body);
+        resolve(chartData.chart.result[0]);
+      } catch (error) {
+        reject(error);
       }
     });
-  })
+  });
+}
+
+function getCurrentPrice(tickers) {
+  const dataPromise = tickers.map((ticker) => {
+    return new Promise(function (resolve, reject) {
+      request(baseUrl + ticker + "/", function (err, res, body) {
+
+        if (err) {
+          reject(err);
+        }
+
+        try {
+          var price = getPrice(body, ticker);
+          var change = getChange(body, ticker);
+          var changePercent = getChangePercent(body, ticker);
+          var atDate = getAtDate(body, ticker);
+          var atTime = getAtTime(body, ticker);
+          var longName = getLongName(body, ticker);
+          var dayRange = getDayRange(body, ticker);
+          var fiftyTwoWeekRange = getFiftyTwoWeekRange(body, ticker);
+
+          resolve({
+            ticker,
+            longName,
+            price,
+            change,
+            changePercent,
+            atDate: new Date(atDate * 1000),
+            atTime,
+            dayRange,
+            fiftyTwoWeekRange,
+          });
+        } catch (err) {
+          reject(err)
+        }
+      })
+    });
+  });
+
+  return Promise.all(dataPromise);
 }
 
 function getMarketSummary() {

@@ -1,13 +1,45 @@
 var Table = require('cli-table3');
 var colors = require('colors');
 colors.enable();
+var blessed = require('blessed');
+var contrib = require('blessed-contrib');
+var AU = require('ansi_up');
 
 module.exports = {
   transformCurrentPrice: transformCurrentPrice,
   transformHistoricalPrices: transformHistoricalPrices,
   transformMarketSummary: transformMarketSummary,
-  transformError: transformError
+  transformError: transformError,
+  transformChart: transformChart
 };
+
+function transformChart(data) {
+  var time = data.timestamp.map((t) => { return new Date(t * 1000).toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true }) });
+
+  const screen = blessed.screen()
+  const line = contrib.line(
+    {
+      style:
+      {
+        line: "yellow",
+        text: "green",
+        baseline: "black"
+      },
+      xLabelPadding: 3,
+      xPadding: 5,
+      label: 'ITC'
+    }), linedata = {
+      x: time,
+      y: data.indicators.quote[0].volume
+    }
+    
+  screen.append(line)
+  line.setData([linedata])
+  screen.key(['escape', 'q', 'C-c'], function (ch, key) {
+    return process.exit(0);
+  });
+  screen.render();
+}
 
 function transformMarketSummary(array) {
   var table = new Table({
@@ -36,14 +68,12 @@ function transformMarketSummary(array) {
   });
 
   return '\n' + table.toString() + '\n'
-    + colors.yellow(`TIP: You can view historical prices by: curl https://terminal-stocks.herokuapp.com/historical/ITC.NS\n\n`)
+    + colors.yellow(`TIP: You can view historical prices by: curl terminal-stocks.shashi.dev/historical/ITC.NS\n\n`)
     + colors.blue.dim(`DISCLAIMER: For information purpose. Do not use for trading.\n`
-      + colors.yellow.dim(`[twitter: @imSPG] [https://github.com/shweshi/terminal-stocks]\n\n`));
+      + colors.yellow.dim(`[twitter: @imSPG] [Github: https://github.com/shweshi/terminal-stocks]\n\n`));
 }
 
 function transformCurrentPrice(data) {
-  const hex = (data.change > 0) ? '008000' : 'FF0000';
-
   var table = new Table({
     head: [
       colors.yellow('Stock Name'),
@@ -58,21 +88,24 @@ function transformCurrentPrice(data) {
     },
   });
 
-  table.push(
-    [
-      data.longName,
-      colors.cyan(data.price),
-      (data.change < 0) ? colors.red(data.change) : colors.green(data.change),
-      (data.changePercent < 0) ? colors.red(data.changePercent) : colors.green(data.changePercent),
-      data.dayRange,
-      data.fiftyTwoWeekRange,
-    ]
-  );
+  for (let i = 0; i < data.length; i++) {
+    const hex = (data[i].change > 0) ? '008000' : 'FF0000';
+    table.push(
+      [
+        data[i].longName,
+        colors.cyan(data[i].price),
+        (data[i].change < 0) ? colors.red(data[i].change) : colors.green(data[i].change),
+        (data[i].changePercent < 0) ? colors.red(data[i].changePercent) : colors.green(data[i].changePercent),
+        data[i].dayRange,
+        data[i].fiftyTwoWeekRange,
+      ]
+    );
+  }
 
-  return '\n' + table.toString() + '\n' + colors.grey(colors.grey(data.atDate)) + '\n\n'
-    + colors.yellow(`TIP: You can view historical prices by: curl https://terminal-stocks.herokuapp.com/historical/${data.ticker}\n\n`)
+  return '\n' + table.toString() + '\n' + colors.grey(colors.grey(data[0].atDate)) + '\n\n'
+    + colors.yellow(`TIP: You can view historical prices by: curl terminal-stocks.shashi.dev/historical/${data[0].ticker}\n\n`)
     + colors.blue.dim(`DISCLAIMER: For information purpose. Do not use for trading.\n`
-      + colors.yellow.dim(`[twitter: @imSPG] [https://github.com/shweshi/terminal-stocks]\n\n`));
+      + colors.yellow.dim(`[twitter: @imSPG] [Github: https://github.com/shweshi/terminal-stocks]\n\n`));
 }
 
 function transformHistoricalPrices(data) {
@@ -110,11 +143,11 @@ function transformHistoricalPrices(data) {
   return `Name: ${data.longName} \n\n` + table.toString() + '\n'
     + colors.yellow(`By default it show 10 entries to see the next entries make next call with ?page=2 and next with ?page=3\n\n`)
     + colors.blue(`* Close price adjusted for splits.\n** Adjusted close price adjusted for both dividends and splits.\n\n`)
-    + colors.yellow(`TIP: You can view current price by: curl https://terminal-stocks.herokuapp.com/${data.ticker}\n\n`)
+    + colors.yellow(`TIP: You can view current price by: curl terminal-stocks.shashi.dev/${data.ticker}\n\n`)
     + colors.blue.dim(`DISCLAIMER: For information purpose. Do not use for trading.\n`
-      + colors.yellow.dim(`[twitter: @imSPG] [https://github.com/shweshi/terminal-stocks]\n`));
+      + colors.yellow.dim(`[twitter: @imSPG] [Github: https://github.com/shweshi/terminal-stocks]\n`));
 }
 
 function transformError(error) {
-  return `\nSorry, we couldn't find. Please check the stock ticker and provide correct one.\n\n` + error;
+  return `\nSorry, we couldn't find. Please check the stock ticker and provide correct one.\n\n`;
 }

@@ -1,12 +1,15 @@
 {
   "name": "terminal-stocks",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Fetch stock price information on terminal",
   "main": "index.js",
   "bin": {
     "terminal-stocks": "./bin/index.js"
   },
   "dependencies": {
+    "ansi_up": "^4.0.4",
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.8.20",
     "body-parser": "^1.4.3",
     "cli-table3": "^0.6.0",
     "colors": "^1.4.0",
@@ -26,10 +29,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shweshi/stocks-cli.git"
+    "url": "git+https://github.com/shweshi/terminal-stocks.git"
   },
   "bugs": {
-    "url": "https://github.com/shweshi/stocks-cli/issues"
+    "url": "https://github.com/shweshi/terminal-stocks/issues"
   },
-  "homepage": "https://github.com/shweshi/stocks-cli#readme"
+  "homepage": "https://github.com/shweshi/terminal-stocks#readme"
 }

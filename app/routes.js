@@ -11,9 +11,10 @@ module.exports = function (app) {
       });
   });
 
-  app.get('/:ticker', function (req, res) {
-    const ticker = req.params.ticker;
-    yahooService.getCurrentPrice(ticker)
+  app.get('/:tickers', function (req, res) {
+    const tickers = req.params.tickers.split(',').map((ticker) => ticker.trim());
+
+    yahooService.getCurrentPrice(tickers)
       .then((data) => {
         res.send(responseTransformer.transformCurrentPrice(data));
       }).catch((error) => {
@@ -28,7 +29,7 @@ module.exports = function (app) {
     const limit = 10;
 
 
-    yahooService.getHistoricalPrices(ticker, {page, limit})
+    yahooService.getHistoricalPrices(ticker, { page, limit })
       .then((data) => {
         res.send(responseTransformer.transformHistoricalPrices(data));
       }).catch((error) => {
