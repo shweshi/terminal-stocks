@@ -5,6 +5,9 @@ Read more here: https://blog.shashi.dev/2021/01/track-stock-market-information-r
 
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Current.png" />
 
+### Documentation
+https://docs.shashi.dev/terminal-stocks
+
 ### How to use
 ```sh
 $ curl terminal-stocks.shashi.dev/<TICKER>
