@@ -23,7 +23,7 @@ var argv = require('yargs/yargs')(process.argv.slice(2))
 
 if (argv.tickers) {
     const tickers = argv.tickers.split(',');
-    stocksCli.fetchCurrentPrice(tickers);
+    stocksCli.fetchCurrentPrice(ticker);
 }
 if (argv.market) {
     stocksCli.fetchMarketSummary();
@@ -34,8 +34,6 @@ if (argv.market) {
     } else if (argv.chart) {
         stocksCli.fetchChart(ticker);
     } else {
-        stocksCli.fetchCurrentPrice(ticker);
+        stocksCli.fetchCurrentPrice([ticker]);
     }
 }
-
-//LANG=en_US.utf8 TERM=xterm-256color
