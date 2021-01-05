@@ -23,7 +23,7 @@ var argv = require('yargs/yargs')(process.argv.slice(2))
 
 if (argv.tickers) {
     const tickers = argv.tickers.split(',');
-    stocksCli.fetchCurrentPrice(ticker);
+    stocksCli.fetchCurrentPrice(tickers);
 }
 if (argv.market) {
     stocksCli.fetchMarketSummary();
