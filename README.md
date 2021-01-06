@@ -17,11 +17,15 @@ $ curl terminal-stocks.shashi.dev/<TICKER>
 ```sh
 $ curl terminal-stocks.shashi.dev/ITC.NS
 ```
+<img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Current.png" />
+
 ### TIP
 - You can also pass comma separated list of tickers
 ```sh
-$ curl terminal-stocks.shashi.dev/ITC.NS,INFY.NS
+$ curl terminal-stocks.shashi.dev/ITC.NS,INFY.NS,WIPRO.NS
 ```
+<img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_List.png" />
+
 ### Note
 - This app uses the yahoo finance to fetch information. Please provide ticker for yahoo finance.
 

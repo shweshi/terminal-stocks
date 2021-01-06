@@ -10,9 +10,12 @@ sudo apt-get install curl
 ## Get current price
 Get the current price information of the stock. You need to provide ticker.
 
+!> terminal-stocks uses yahoo tickers.
+
+
 ```sh
 curl terminal-stocks.shashi.dev/<TICKER>
-```
+``` 
 
 Example:
 ```sh
@@ -23,6 +26,8 @@ curl terminal-stocks.shashi.dev/ITC.NS
 
 ## Get current price of multiple stocks at once
 Get the current price information of the multiple stocks. You need to provide ticker separated by comma.
+
+!> **Important** while sending multiple tickers don't put space after comma.
 
 ```sh
 curl terminal-stocks.shashi.dev/<TICKER1,TICKER2>
@@ -61,7 +66,9 @@ curl terminal-stocks.shashi.dev/market-summary
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Market.png" />
 
 ## PRO TIP
-You can fetch the market (Sensex, Nify 50, Dow) information also by providing as ticker in current price api
+
+?> **Tip** You can fetch the market (Sensex, Nify 50, Dow) information also by providing as ticker in current price api
+
  ```sh
 curl terminal-stocks.shashi.dev/<TICKER>
 ```
@@ -70,3 +77,8 @@ Example:
 ```sh
 curl terminal-stocks.shashi.dev/^BSENS
 ```
+
+---
+
+?> DISCLAIMER: Use data provided by termnal-stocks for information purpose. Do not use for trading.
+> **Twitter**: [@imSPG](https://twitter.com/imSPG), **Github**: https://github.com/shweshi/terminal-stocks
