@@ -1,10 +1,10 @@
 {
   "name": "terminal-stocks",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Fetch stock price information on terminal",
   "main": "index.js",
   "bin": {
-    "terminal-stocks": "./bin/index.js"
+    "terminal-stocks": "bin/index.js"
   },
   "dependencies": {
     "ansi_up": "^4.0.4",
@@ -14,13 +14,15 @@
     "cli-table3": "^0.6.0",
     "colors": "^1.4.0",
     "express": "^4.15.4",
+    "jsonexport": "^3.2.0",
     "request": "^2.88.0",
     "yargs": "^16.1.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "node server.js",
-    "watch": "nodemon server.js"
+    "watch": "nodemon server.js",
+    "start": "node server.js"
   },
   "author": "Shashi Prakash Gautam <contactmespg@gmail.com>",
   "license": "ISC",
@@ -34,5 +36,8 @@
   "bugs": {
     "url": "https://github.com/shweshi/terminal-stocks/issues"
   },
-  "homepage": "https://github.com/shweshi/terminal-stocks#readme"
+  "homepage": "https://github.com/shweshi/terminal-stocks#readme",
+  "directories": {
+    "doc": "docs"
+  }
 }

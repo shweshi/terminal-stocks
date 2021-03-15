@@ -82,6 +82,20 @@ Example:
 terminal-stocks --ticker ^BSENS
 ```
 
+## Export the data
+You can export the data as json and csv file.
+- To export as json
+ ```sh
+terminal-stocks --ticker <TICKER> --json
+```
+
+- To export as csv
+ ```sh
+terminal-stocks --ticker <TICKER> --csv
+```
+
+This works with other data also like --historical, --market or --tickers
+
 ---
 
 ?> DISCLAIMER: Use data provided by termnal-stocks for information purpose. Do not use for trading.

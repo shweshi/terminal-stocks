@@ -10,7 +10,9 @@ module.exports = {
   transformHistoricalPrices: transformHistoricalPrices,
   transformMarketSummary: transformMarketSummary,
   transformError: transformError,
-  transformChart: transformChart
+  transformChart: transformChart,
+  transformExportJsonSuccess: transformExportJsonSuccess,
+  transformExportCsvSuccess: transformExportCsvSuccess,
 };
 
 function transformChart(data) {
@@ -32,7 +34,7 @@ function transformChart(data) {
       x: time,
       y: data.indicators.quote[0].volume
     }
-    
+
   screen.append(line)
   line.setData([linedata])
   screen.key(['escape', 'q', 'C-c'], function (ch, key) {
@@ -149,5 +151,13 @@ function transformHistoricalPrices(data) {
 }
 
 function transformError(error) {
-  return `\nSorry, we couldn't find. Please check the stock ticker and provide correct one.\n\n`;
+  return `\nSorry, we couldn't find. Please check the stock ticker and provide correct one.\n\n ${error.message}`;
+}
+
+function transformExportJsonSuccess() {
+  return `\nExported to json successfully.\nStored in: ${process.cwd()}\n`;
+}
+
+function transformExportCsvSuccess() {
+  return `\nExported to csv successfully.\nStored in: ${process.cwd()}\n`;
 }
