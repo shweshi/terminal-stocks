@@ -49,6 +49,8 @@ terminal-stocks -t [ticker] --historical [domain] // to see the historical price
 terminal-stocks --tickers ITC.NS,INFY.NS // to get the current prices of the multiple stocks
 terminal-stocks -m // to see the market summary
 terminal-stocks --market // to see the market summary
+terminal-stokcs --market --json // to export the data as json file
+terminal-stokcs --market --csv // to expor the data as csv file
 ```
 
 ### Example

@@ -16,24 +16,34 @@ var argv = require('yargs/yargs')(process.argv.slice(2))
     .alias('c', 'chart')
     .describe('c', 'Fetch chart for given ticker')
     .describe('historical', 'To get historical price information of the stock')
+    .describe('json', 'To export the data as json')
+    .describe('csv', 'To export the data csv')
     .help('h')
     .alias('h', 'help')
     .alias('v', 'version')
     .argv;
 
+const options = {};
+
+if (argv.json) {
+    options.export = 'json';
+} else if (argv.csv) {
+    options.export = 'csv';
+}
+
 if (argv.tickers) {
     const tickers = argv.tickers.split(',');
-    stocksCli.fetchCurrentPrice(tickers);
+    stocksCli.fetchCurrentPrice(tickers, options);
 }
 if (argv.market) {
-    stocksCli.fetchMarketSummary();
+    stocksCli.fetchMarketSummary(options, options);
 } else if (argv.t || argv.ticker) {
     const ticker = argv.t || argv.ticker;
     if (argv.historical) {
-        stocksCli.fetchHistoricalPrices(ticker, { page: 1, limit: 10 });
+        stocksCli.fetchHistoricalPrices(ticker, { page: 1, limit: 10, export: options.export });
     } else if (argv.chart) {
         stocksCli.fetchChart(ticker);
     } else {
-        stocksCli.fetchCurrentPrice([ticker]);
+        stocksCli.fetchCurrentPrice([ticker], options);
     }
 }
