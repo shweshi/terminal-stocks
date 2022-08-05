@@ -91,7 +91,9 @@ $ npm run serve
 ### Development
 Want to contribute? Great! Feel free to open a PR.
 
-#### Upvote on Product Hunt
+### Support
 <a href="https://www.producthunt.com/posts/terminal-stocks?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-terminal-stocks" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=281388&theme=dark" alt="Terminal Stocks - Track stock market right in your terminal | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
+<a href="https://www.buymeacoffee.com/shashi" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a> 
 
 ### Happy Coding!!!
