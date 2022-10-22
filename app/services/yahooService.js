@@ -36,14 +36,15 @@ function getCurrentPrice(tickers) {
 
         try {
           var json = getQuoteDataFromBodyAsJson(body)
-          var price = getPrice(json[ticker]);
-          var change = getChange(json[ticker]);
-          var changePercent = getChangePercent(json[ticker]);
-          var atDate = getAtDate(json[ticker]);
-          var atTime = getAtTime(json[ticker]);
-          var longName = (getLongName(json[ticker])) ? getLongName(json[ticker]) : getShortName(json[ticker]);
-          var dayRange = getDayRange(json[ticker]);
-          var fiftyTwoWeekRange = getFiftyTwoWeekRange(json[ticker]);
+          var entity = json[ticker]
+          var price = getPrice(entity);
+          var change = getChange(entity);
+          var changePercent = getChangePercent(entity);
+          var atDate = getAtDate(entity);
+          var atTime = getAtTime(entity);
+          var longName = (getLongName(entity)) ? getLongName(entity) : getShortName(entity);
+          var dayRange = getDayRange(entity);
+          var fiftyTwoWeekRange = getFiftyTwoWeekRange(entity);
 
           resolve({
             ticker,
@@ -133,80 +134,36 @@ function getQuoteDataFromBodyAsJson(body) {
 
 function getPrice(entity) {
   return entity.regularMarketPrice.fmt;
-  return body.split(`"${ticker}":{"sourceInterval"`)[1]
-    .split("regularMarketPrice")[1]
-    .split("fmt\":\"")[1]
-    .split("\"")[0];
 }
 
 function getChange(entity) {
   return parseFloat(entity.regularMarketChange.fmt);
-  return parseFloat(body.split(`"${ticker}":{"sourceInterval"`)[1]
-    .split("regularMarketChange")[1]
-    .split("fmt\":\"")[1]
-    .split("\"")[0]);
 }
 
 function getChangePercent(entity) {
   return parseFloat(entity.regularMarketChangePercent.fmt);
-  return parseFloat(body.split(`"${ticker}":{"sourceInterval"`)[1]
-    .split("regularMarketChangePercent")[1]
-    .split("fmt\":\"")[1]
-    .split("\"")[0]);
 }
 
 function getAtDate(entity) {
   return entity.regularMarketTime.raw;
-  return body.split(`"${ticker}":{"sourceInterval"`)[1]
-    .split("regularMarketTime")[1]
-    .split(":{\"raw\":\"")[0]
-    .split(":{\"raw\":")[1]
-    .split("\"")[0]
-    .split(',')[0];
 }
 
 function getAtTime(entity) {
   return entity.regularMarketTime.fmt;
-  return body.split(`"${ticker}":{"sourceInterval"`)[1]
-    .split("regularMarketTime")[1]
-    .split("fmt\":\"")[1]
-    .split("\"")[0];
 }
 
 function getLongName(entity) {
   return entity.longName;
-  const dataStore = body.split(`"StreamDataStore":`)[1];
-  const quoteData = dataStore.split(`,"QuoteSummaryStore"`)[0];
-  const quoteDataAsJSON = JSON.parse(quoteData);
-  return dataStore
-    .split("longName")[1]
-    .split(":")[1]
-    .split(",")[0]
-    .replace(/"/g, '');
 }
 
 function getShortName(entity) {
   return entity.shortName;
-  return body.split(`"${ticker}":{"sourceInterval"`)[1]
-    .split("shortName")[1]
-    .split(":")[1]
-    .split(",")[0]
-    .replace(/"/g, '')
-    .replace(/\u002/, '-');
 }
 
 function getDayRange(entity) {
   return entity.regularMarketDayRange.fmt;
-  return body.split(`"${ticker}":{"sourceInterval"`)[1]
-    .split("regularMarketDayRange")[1]
-    .split("fmt\":\"")[1]
-    .split("\"")[0];
 }
 
 function getFiftyTwoWeekRange(entity) {
   return entity.fiftyTwoWeekRange.fmt;
-  return body.split(`"${ticker}":{"sourceInterval"`)[1]
-    .split("fiftyTwoWeekRange")[1]
-    .split("fmt\":\"")[1]
-    .split("\"")[0];
 }
