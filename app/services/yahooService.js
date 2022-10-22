@@ -35,14 +35,15 @@ function getCurrentPrice(tickers) {
         }
 
         try {
-          var price = getPrice(body, ticker);
-          var change = getChange(body, ticker);
-          var changePercent = getChangePercent(body, ticker);
-          var atDate = getAtDate(body, ticker);
-          var atTime = getAtTime(body, ticker);
-          var longName = getLongName(body, ticker);
-          var dayRange = getDayRange(body, ticker);
-          var fiftyTwoWeekRange = getFiftyTwoWeekRange(body, ticker);
+          var json = getQuoteDataFromBodyAsJson(body)
+          var price = getPrice(json[ticker]);
+          var change = getChange(json[ticker]);
+          var changePercent = getChangePercent(json[ticker]);
+          var atDate = getAtDate(json[ticker]);
+          var atTime = getAtTime(json[ticker]);
+          var longName = (getLongName(json[ticker])) ? getLongName(json[ticker]) : getShortName(json[ticker]);
+          var dayRange = getDayRange(json[ticker]);
+          var fiftyTwoWeekRange = getFiftyTwoWeekRange(json[ticker]);
 
           resolve({
             ticker,
@@ -123,28 +124,39 @@ function getHistoricalPrices(ticker, options) {
 }
 
 // Helper functions
-function getPrice(body, ticker) {
+function getQuoteDataFromBodyAsJson(body) {
+  const dataStore = body
+                    .split(`"StreamDataStore":`)[1]
+                    .split(`,"QuoteSummaryStore"`)[0];
+  return JSON.parse(dataStore)['quoteData'];
+}
+
+function getPrice(entity) {
+  return entity.regularMarketPrice.fmt;
   return body.split(`"${ticker}":{"sourceInterval"`)[1]
     .split("regularMarketPrice")[1]
     .split("fmt\":\"")[1]
     .split("\"")[0];
 }
 
-function getChange(body, ticker) {
+function getChange(entity) {
+  return parseFloat(entity.regularMarketChange.fmt);
   return parseFloat(body.split(`"${ticker}":{"sourceInterval"`)[1]
     .split("regularMarketChange")[1]
     .split("fmt\":\"")[1]
     .split("\"")[0]);
 }
 
-function getChangePercent(body, ticker) {
+function getChangePercent(entity) {
+  return parseFloat(entity.regularMarketChangePercent.fmt);
   return parseFloat(body.split(`"${ticker}":{"sourceInterval"`)[1]
     .split("regularMarketChangePercent")[1]
     .split("fmt\":\"")[1]
     .split("\"")[0]);
 }
 
-function getAtDate(body, ticker) {
+function getAtDate(entity) {
+  return entity.regularMarketTime.raw;
   return body.split(`"${ticker}":{"sourceInterval"`)[1]
     .split("regularMarketTime")[1]
     .split(":{\"raw\":\"")[0]
@@ -153,22 +165,28 @@ function getAtDate(body, ticker) {
     .split(',')[0];
 }
 
-function getAtTime(body, ticker) {
+function getAtTime(entity) {
+  return entity.regularMarketTime.fmt;
   return body.split(`"${ticker}":{"sourceInterval"`)[1]
     .split("regularMarketTime")[1]
     .split("fmt\":\"")[1]
     .split("\"")[0];
 }
 
-function getLongName(body, ticker) {
-  return body.split(`"${ticker}":{"sourceInterval"`)[1]
+function getLongName(entity) {
+  return entity.longName;
+  const dataStore = body.split(`"StreamDataStore":`)[1];
+  const quoteData = dataStore.split(`,"QuoteSummaryStore"`)[0];
+  const quoteDataAsJSON = JSON.parse(quoteData);
+  return dataStore
     .split("longName")[1]
     .split(":")[1]
     .split(",")[0]
     .replace(/"/g, '');
 }
 
-function getShortName(body, ticker) {
+function getShortName(entity) {
+  return entity.shortName;
   return body.split(`"${ticker}":{"sourceInterval"`)[1]
     .split("shortName")[1]
     .split(":")[1]
@@ -177,14 +195,16 @@ function getShortName(body, ticker) {
     .replace(/\u002/, '-');
 }
 
-function getDayRange(body, ticker) {
+function getDayRange(entity) {
+  return entity.regularMarketDayRange.fmt;
   return body.split(`"${ticker}":{"sourceInterval"`)[1]
     .split("regularMarketDayRange")[1]
     .split("fmt\":\"")[1]
     .split("\"")[0];
 }
 
-function getFiftyTwoWeekRange(body, ticker) {
+function getFiftyTwoWeekRange(entity) {
+  return entity.fiftyTwoWeekRange.fmt;
   return body.split(`"${ticker}":{"sourceInterval"`)[1]
     .split("fiftyTwoWeekRange")[1]
     .split("fmt\":\"")[1]
