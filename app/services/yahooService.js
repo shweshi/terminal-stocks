@@ -106,14 +106,10 @@ function getHistoricalPrices(ticker, options) {
       }
 
       try {
-        var longName = body.split(`"${ticker}":{"sourceInterval"`)[1]
-          .split("longName")[1]
-          .split(":")[1]
-          .split(",")[0].replace(/"/g, '');
-
-        var prices = body.split("HistoricalPriceStore\":{\"prices\"\:")[1].split("}]")[0] + '}]';
-
-        jsonPrices = JSON.parse(prices);
+        var json = getQuoteDataFromBodyAsJson(body)
+        var entity = json[ticker]
+        var longName = (getLongName(entity)) ? getLongName(entity) : getShortName(entity)
+        jsonPrices = getHistoricalDataFromBodyAsJson(body)
 
         const array = jsonPrices.slice((page - 1) * limit, page * limit);
         resolve({ longName, ticker, array });
@@ -127,9 +123,13 @@ function getHistoricalPrices(ticker, options) {
 // Helper functions
 function getQuoteDataFromBodyAsJson(body) {
   const dataStore = body
-                    .split(`"StreamDataStore":`)[1]
-                    .split(`,"QuoteSummaryStore"`)[0];
+    .split(`"StreamDataStore":`)[1]
+    .split(`,"QuoteSummaryStore"`)[0];
   return JSON.parse(dataStore)['quoteData'];
+}
+
+function getHistoricalDataFromBodyAsJson(body) {
+  return JSON.parse(body.split("HistoricalPriceStore\":{\"prices\"\:")[1].split("}]")[0] + '}]');
 }
 
 function getPrice(entity) {
