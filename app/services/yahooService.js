@@ -132,7 +132,7 @@ function getQuoteDataFromBodyAsJson(body) {
 function getPricesForMarketsFromBodyAsJson(body) {
   const dataStore = body
     .split(`"StreamDataStore":`)[1]
-    .split(`,"NavServiceStore"`)[0];
+    .split(`}},"`)[0] + "}}}";
   return JSON.parse(dataStore)['quoteData'];
 }
 
