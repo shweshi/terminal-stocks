@@ -69,23 +69,24 @@ function getCurrentPrice(tickers) {
 
 function getMarketSummary() {
   return new Promise(function (resolve, reject) {
-    request('https://in.finance.yahoo.com', function (err, res, body) {
+    request(baseUrl, function (err, res, body) {
 
       if (err) {
         reject(err);
       }
 
       try {
-        var data = body.split("MarketSummaryStore\":{\"data\"\:")[1].split("}]")[0] + '}]';
-        json = JSON.parse(data);
+        jsonMarketSummary = getMarketSummaryDataFromBodyAsJson(body)
+        jsonMarketPrices = getPricesForMarketsFromBodyAsJson(body)
         data = [];
-        for (let ticker of json) {
-          var shortName = getShortName(body, ticker.symbol);
-          var price = getPrice(body, ticker.symbol);
-          var change = getChange(body, ticker.symbol);
-          var changePercent = getChangePercent(body, ticker.symbol);
-          var atDate = getAtDate(body, ticker.symbol);
-          data.push({ ticker: ticker.symbol, shortName, price, change, changePercent, atDate });
+        for (let entity of jsonMarketSummary) {
+          var shortName = (getShortName(jsonMarketPrices[entity.symbol])) ? getShortName(jsonMarketPrices[entity.symbol]) : getLongName(jsonMarketPrices[entity.symbol]);
+          shortName = (shortName) ? shortName : entity.symbol;
+          var price = getPrice(jsonMarketPrices[entity.symbol]);
+          var change = getChange(jsonMarketPrices[entity.symbol]);
+          var changePercent = getChangePercent(jsonMarketPrices[entity.symbol]);
+          var atDate = getAtDate(jsonMarketPrices[entity.symbol]);
+          data.push({ ticker: entity.symbol, shortName, price, change, changePercent, atDate });
         }
         resolve(data);
       } catch (err) {
@@ -128,8 +129,20 @@ function getQuoteDataFromBodyAsJson(body) {
   return JSON.parse(dataStore)['quoteData'];
 }
 
+function getPricesForMarketsFromBodyAsJson(body) {
+  const dataStore = body
+    .split(`"StreamDataStore":`)[1]
+    .split(`}},"`)[0] + "}}}";
+  return JSON.parse(dataStore)['quoteData'];
+}
+
 function getHistoricalDataFromBodyAsJson(body) {
   return JSON.parse(body.split("HistoricalPriceStore\":{\"prices\"\:")[1].split("}]")[0] + '}]');
+}
+
+function getMarketSummaryDataFromBodyAsJson(body) {
+  const dataStore = body.split("MarketSummaryStore\":{\"data\"\:")[1].split("}]")[0] + '}]';
+  return JSON.parse(dataStore);
 }
 
 function getPrice(entity) {
