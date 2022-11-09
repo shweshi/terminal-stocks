@@ -61,7 +61,7 @@ terminal-stocks -t ITC.NS
 ### View Historical data
 ### Example
 ```sh
-$ curl terminal-stocks.herokuapp.com/historical/ITC.NS
+$ curl terminal-stocks.shashi.dev/historical/ITC.NS
 ```
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Historical.png" />
 
@@ -70,7 +70,7 @@ $ curl terminal-stocks.herokuapp.com/historical/ITC.NS
 ### View Market Summary
 ### Example
 ```sh
-$ curl terminal-stocks.herokuapp.com/market-summary
+$ curl terminal-stocks.shashi.dev/market-summary
 ```
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Market.png" />
 
