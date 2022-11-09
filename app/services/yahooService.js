@@ -1,5 +1,6 @@
 var request = require('request');
 const baseUrl = 'https://finance.yahoo.com/quote/';
+const regex = /root.App.main\s*=\s*{(.*)};/g
 
 module.exports = {
   getCurrentPrice: getCurrentPrice,
@@ -35,7 +36,8 @@ function getCurrentPrice(tickers) {
         }
 
         try {
-          var json = getQuoteDataFromBodyAsJson(body)
+          var dataStore = getDataStore(body)
+          var json = getQuoteDataFromBodyAsJson(dataStore)
           var entity = json[ticker]
           var price = getPrice(entity);
           var change = getChange(entity);
@@ -76,9 +78,10 @@ function getMarketSummary() {
       }
 
       try {
-        jsonMarketSummary = getMarketSummaryDataFromBodyAsJson(body)
-        jsonMarketPrices = getPricesForMarketsFromBodyAsJson(body)
-        data = [];
+        var dataStore = getDataStore(body)
+        var jsonMarketSummary = getMarketSummaryDataFromBodyAsJson(dataStore)
+        var jsonMarketPrices = getQuoteDataFromBodyAsJson(dataStore)
+        var data = [];
         for (let entity of jsonMarketSummary) {
           var shortName = (getShortName(jsonMarketPrices[entity.symbol])) ? getShortName(jsonMarketPrices[entity.symbol]) : getLongName(jsonMarketPrices[entity.symbol]);
           shortName = (shortName) ? shortName : entity.symbol;
@@ -107,10 +110,11 @@ function getHistoricalPrices(ticker, options) {
       }
 
       try {
-        var json = getQuoteDataFromBodyAsJson(body)
+        var dataStore = getDataStore(body)
+        var json = getQuoteDataFromBodyAsJson(dataStore)
         var entity = json[ticker]
         var longName = (getLongName(entity)) ? getLongName(entity) : getShortName(entity)
-        jsonPrices = getHistoricalDataFromBodyAsJson(body)
+        var jsonPrices = getHistoricalDataFromBodyAsJson(dataStore)
 
         const array = jsonPrices.slice((page - 1) * limit, page * limit);
         resolve({ longName, ticker, array });
@@ -122,27 +126,20 @@ function getHistoricalPrices(ticker, options) {
 }
 
 // Helper functions
-function getQuoteDataFromBodyAsJson(body) {
-  const dataStore = body
-    .split(`"StreamDataStore":`)[1]
-    .split(`,"QuoteSummaryStore"`)[0];
-  return JSON.parse(dataStore)['quoteData'];
+function getDataStore(body) {
+  return "{"+body.split(regex)[1]+"}"
 }
 
-function getPricesForMarketsFromBodyAsJson(body) {
-  const dataStore = body
-    .split(`"StreamDataStore":`)[1]
-    .split(`}},"`)[0] + "}}}";
-  return JSON.parse(dataStore)['quoteData'];
+function getQuoteDataFromBodyAsJson(dataStore) {
+  return JSON.parse(dataStore).context.dispatcher.stores.StreamDataStore.quoteData
 }
 
-function getHistoricalDataFromBodyAsJson(body) {
-  return JSON.parse(body.split("HistoricalPriceStore\":{\"prices\"\:")[1].split("}]")[0] + '}]');
+function getHistoricalDataFromBodyAsJson(dataStore) {
+  return JSON.parse(dataStore).context.dispatcher.stores.HistoricalPriceStore.prices
 }
 
-function getMarketSummaryDataFromBodyAsJson(body) {
-  const dataStore = body.split("MarketSummaryStore\":{\"data\"\:")[1].split("}]")[0] + '}]';
-  return JSON.parse(dataStore);
+function getMarketSummaryDataFromBodyAsJson(dataStore) {
+  return JSON.parse(dataStore).context.dispatcher.stores.MarketSummaryStore.data
 }
 
 function getPrice(entity) {
