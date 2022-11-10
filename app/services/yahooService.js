@@ -36,8 +36,8 @@ function getCurrentPrice(tickers) {
         }
 
         try {
-          var dataStore = getDataStore(body)
-          var json = getQuoteDataFromBodyAsJson(dataStore)
+          var dataStore = getDataStoreAsJson(body)
+          var json = getQuoteData(dataStore)
           var entity = json[ticker]
           var price = getPrice(entity);
           var change = getChange(entity);
@@ -78,9 +78,9 @@ function getMarketSummary() {
       }
 
       try {
-        var dataStore = getDataStore(body)
-        var jsonMarketSummary = getMarketSummaryDataFromBodyAsJson(dataStore)
-        var jsonMarketPrices = getQuoteDataFromBodyAsJson(dataStore)
+        var dataStore = getDataStoreAsJson(body)
+        var jsonMarketSummary = getMarketSummaryData(dataStore)
+        var jsonMarketPrices = getQuoteData(dataStore)
         var data = [];
         for (let entity of jsonMarketSummary) {
           var shortName = (getShortName(jsonMarketPrices[entity.symbol])) ? getShortName(jsonMarketPrices[entity.symbol]) : getLongName(jsonMarketPrices[entity.symbol]);
@@ -110,8 +110,8 @@ function getHistoricalPrices(ticker, options) {
       }
 
       try {
-        var dataStore = getDataStore(body)
-        var json = getQuoteDataFromBodyAsJson(dataStore)
+        var dataStore = getDataStoreAsJson(body)
+        var json = getQuoteData(dataStore)
         var entity = json[ticker]
         var longName = (getLongName(entity)) ? getLongName(entity) : getShortName(entity)
         var jsonPrices = getHistoricalDataFromBodyAsJson(dataStore)
@@ -126,20 +126,20 @@ function getHistoricalPrices(ticker, options) {
 }
 
 // Helper functions
-function getDataStore(body) {
-  return "{"+body.split(regex)[1]+"}"
+function getDataStoreAsJson(body) {
+  return JSON.parse("{"+body.split(regex)[1]+"}")
 }
 
-function getQuoteDataFromBodyAsJson(dataStore) {
-  return JSON.parse(dataStore).context.dispatcher.stores.StreamDataStore.quoteData
+function getQuoteData(dataStore) {
+  return dataStore.context.dispatcher.stores.StreamDataStore.quoteData
 }
 
 function getHistoricalDataFromBodyAsJson(dataStore) {
-  return JSON.parse(dataStore).context.dispatcher.stores.HistoricalPriceStore.prices
+  return dataStore.context.dispatcher.stores.HistoricalPriceStore.prices
 }
 
-function getMarketSummaryDataFromBodyAsJson(dataStore) {
-  return JSON.parse(dataStore).context.dispatcher.stores.MarketSummaryStore.data
+function getMarketSummaryData(dataStore) {
+  return dataStore.context.dispatcher.stores.MarketSummaryStore.data
 }
 
 function getPrice(entity) {
