@@ -1,4 +1,6 @@
 var request = require('request');
+var CryptoJS = require("crypto-js");
+
 const baseUrl = 'https://finance.yahoo.com/quote/';
 const regex = /root.App.main\s*=\s*{(.*)};/g
 
@@ -35,9 +37,10 @@ function getCurrentPrice(tickers) {
           reject(err);
         }
 
-        try {
+        try {          
           var dataStore = getDataStoreAsJson(body)
-          var json = getQuoteData(dataStore)
+          var decryptedDataStore = getDecryptedBody(dataStore)
+          var json = getQuoteData(decryptedDataStore)
           var entity = json[ticker]
           var price = getPrice(entity);
           var change = getChange(entity);
@@ -79,8 +82,9 @@ function getMarketSummary() {
 
       try {
         var dataStore = getDataStoreAsJson(body)
-        var jsonMarketSummary = getMarketSummaryData(dataStore)
-        var jsonMarketPrices = getQuoteData(dataStore)
+        var decryptedDataStore = getDecryptedBody(dataStore)
+        var jsonMarketSummary = getMarketSummaryData(decryptedDataStore)
+        var jsonMarketPrices = getQuoteData(decryptedDataStore)
         var data = [];
         for (let entity of jsonMarketSummary) {
           var shortName = (getShortName(jsonMarketPrices[entity.symbol])) ? getShortName(jsonMarketPrices[entity.symbol]) : getLongName(jsonMarketPrices[entity.symbol]);
@@ -111,10 +115,11 @@ function getHistoricalPrices(ticker, options) {
 
       try {
         var dataStore = getDataStoreAsJson(body)
-        var json = getQuoteData(dataStore)
+        var decryptedDataStore = getDecryptedBody(dataStore)
+        var json = getQuoteData(decryptedDataStore)
         var entity = json[ticker]
         var longName = (getLongName(entity)) ? getLongName(entity) : getShortName(entity)
-        var jsonPrices = getHistoricalDataFromBodyAsJson(dataStore)
+        var jsonPrices = getHistoricalDataFromBodyAsJson(decryptedDataStore)
 
         const array = jsonPrices.slice((page - 1) * limit, page * limit);
         resolve({ longName, ticker, array });
@@ -126,20 +131,29 @@ function getHistoricalPrices(ticker, options) {
 }
 
 // Helper functions
+function getDecryptedBody(dataStore) {
+  let _cs = dataStore._cs
+  let _cr = dataStore._cr
+  stores = dataStore.context.dispatcher.stores
+  var key = CryptoJS.algo.PBKDF2.create({ keySize: 8 }).compute(_cs, JSON.parse(_cr)).toString();
+  var plaintext = CryptoJS.AES.decrypt(stores, key);
+  return JSON.parse(decodeURIComponent(escape(CryptoJS.enc.Latin1.stringify(plaintext))));
+}
+
 function getDataStoreAsJson(body) {
   return JSON.parse("{"+body.split(regex)[1]+"}")
 }
 
 function getQuoteData(dataStore) {
-  return dataStore.context.dispatcher.stores.StreamDataStore.quoteData
+  return dataStore.StreamDataStore.quoteData
 }
 
 function getHistoricalDataFromBodyAsJson(dataStore) {
-  return dataStore.context.dispatcher.stores.HistoricalPriceStore.prices
+  return dataStore.HistoricalPriceStore.prices
 }
 
 function getMarketSummaryData(dataStore) {
-  return dataStore.context.dispatcher.stores.MarketSummaryStore.data
+  return dataStore.MarketSummaryStore.data
 }
 
 function getPrice(entity) {
