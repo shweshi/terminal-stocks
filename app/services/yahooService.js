@@ -132,12 +132,18 @@ function getHistoricalPrices(ticker, options) {
 
 // Helper functions
 function getDecryptedBody(dataStore) {
-  let _cs = dataStore._cs
-  let _cr = dataStore._cr
+  let pwKey = Object.keys(dataStore)[2];
+  var password = dataStore[pwKey];
+  
   stores = dataStore.context.dispatcher.stores
-  var key = CryptoJS.algo.PBKDF2.create({ keySize: 8 }).compute(_cs, JSON.parse(_cr)).toString();
-  var plaintext = CryptoJS.AES.decrypt(stores, key);
+  var plaintext = CryptoJS.AES.decrypt(stores, password);
   return JSON.parse(decodeURIComponent(escape(CryptoJS.enc.Latin1.stringify(plaintext))));
+}
+
+function getJsonLastElement(json) 
+{
+    let len = json.length
+    return json[len - 1]
 }
 
 function getDataStoreAsJson(body) {
