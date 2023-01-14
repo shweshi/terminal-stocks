@@ -1,6 +1,6 @@
 # terminal-stocks
 
-terminal-stocks is a terminal based application that provide stock price information.
+terminal-stocks is a terminal based application that provides stock price information.
 Read more here: https://blog.shashi.dev/2021/01/track-stock-market-information-right-in.html
 
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Current.png" />
@@ -27,7 +27,7 @@ $ curl terminal-stocks.dev/ITC.NS,INFY.NS,WIPRO.NS
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_List.png" />
 
 ### Note
-- This app uses the yahoo finance to fetch information. Please provide ticker for yahoo finance.
+- This app uses https://finance.yahoo.com/ to fetch information. Please provide a ticker symbol from yahoo finance to fetch the ticker's market data
 
 
 ### CLI Usage
