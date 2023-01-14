@@ -10,19 +10,19 @@ https://shashi.dev/terminal-stocks
 
 ### How to use
 ```sh
-$ curl terminal-stocks.shashi.dev/<TICKER>
+$ curl terminal-stocks.dev/<TICKER>
 ```
 
 ### Example
 ```sh
-$ curl terminal-stocks.shashi.dev/ITC.NS
+$ curl terminal-stocks.dev/ITC.NS
 ```
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Current.png" />
 
 ### TIP
 - You can also pass comma separated list of tickers
 ```sh
-$ curl terminal-stocks.shashi.dev/ITC.NS,INFY.NS,WIPRO.NS
+$ curl terminal-stocks.dev/ITC.NS,INFY.NS,WIPRO.NS
 ```
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_List.png" />
 
@@ -61,7 +61,7 @@ terminal-stocks -t ITC.NS
 ### View Historical data
 ### Example
 ```sh
-$ curl terminal-stocks.shashi.dev/historical/ITC.NS
+$ curl terminal-stocks.dev/historical/ITC.NS
 ```
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Historical.png" />
 
@@ -70,7 +70,7 @@ $ curl terminal-stocks.shashi.dev/historical/ITC.NS
 ### View Market Summary
 ### Example
 ```sh
-$ curl terminal-stocks.shashi.dev/market-summary
+$ curl terminal-stocks.dev/market-summary
 ```
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Market.png" />
 

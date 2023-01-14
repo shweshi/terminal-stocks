@@ -70,7 +70,7 @@ function transformMarketSummary(array) {
   });
 
   return '\n' + table.toString() + '\n'
-    + colors.yellow(`TIP: You can view historical prices by: curl terminal-stocks.shashi.dev/historical/ITC.NS\n\n`)
+    + colors.yellow(`TIP: You can view historical prices by: curl terminal-stocks.dev/historical/ITC.NS\n\n`)
     + colors.blue.dim(`DISCLAIMER: For information purpose. Do not use for trading.\n`
       + colors.yellow.dim(`[twitter: @imSPG] [Github: https://github.com/shweshi/terminal-stocks]\n\n`));
 }
@@ -105,7 +105,7 @@ function transformCurrentPrice(data) {
   }
 
   return '\n' + table.toString() + '\n' + colors.grey(colors.grey(data[0].atDate)) + '\n\n'
-    + colors.yellow(`TIP: You can view historical prices by: curl terminal-stocks.shashi.dev/historical/${data[0].ticker}\n\n`)
+    + colors.yellow(`TIP: You can view historical prices by: curl terminal-stocks.dev/historical/${data[0].ticker}\n\n`)
     + colors.blue.dim(`DISCLAIMER: For information purpose. Do not use for trading.\n`
       + colors.yellow.dim(`[twitter: @imSPG] [Github: https://github.com/shweshi/terminal-stocks]\n\n`));
 }
@@ -145,7 +145,7 @@ function transformHistoricalPrices(data) {
   return `Name: ${data.longName} \n\n` + table.toString() + '\n'
     + colors.yellow(`By default it show 10 entries to see the next entries make next call with ?page=2 and next with ?page=3\n\n`)
     + colors.blue(`* Close price adjusted for splits.\n** Adjusted close price adjusted for both dividends and splits.\n\n`)
-    + colors.yellow(`TIP: You can view current price by: curl terminal-stocks.shashi.dev/${data.ticker}\n\n`)
+    + colors.yellow(`TIP: You can view current price by: curl terminal-stocks.dev/${data.ticker}\n\n`)
     + colors.blue.dim(`DISCLAIMER: For information purpose. Do not use for trading.\n`
       + colors.yellow.dim(`[twitter: @imSPG] [Github: https://github.com/shweshi/terminal-stocks]\n`));
 }

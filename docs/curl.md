@@ -14,12 +14,12 @@ Get the current price information of the stock. You need to provide ticker.
 
 
 ```sh
-curl terminal-stocks.shashi.dev/<TICKER>
+curl terminal-stocks.dev/<TICKER>
 ``` 
 
 Example:
 ```sh
-curl terminal-stocks.shashi.dev/ITC.NS
+curl terminal-stocks.dev/ITC.NS
 ```
 
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Current.png" />
@@ -30,12 +30,12 @@ Get the current price information of the multiple stocks. You need to provide ti
 !> **Important** while sending multiple tickers don't put space after comma.
 
 ```sh
-curl terminal-stocks.shashi.dev/<TICKER1,TICKER2>
+curl terminal-stocks.dev/<TICKER1,TICKER2>
 ```
 
 Example:
 ```sh
-curl terminal-stocks.shashi.dev/ITC.NS,INFY.NS
+curl terminal-stocks.dev/ITC.NS,INFY.NS
 ```
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_MultipleStocks.png" />
 
@@ -43,12 +43,12 @@ curl terminal-stocks.shashi.dev/ITC.NS,INFY.NS
 Get the historical price information of the stocks.
 
 ```sh
-curl terminal-stocks.shashi.dev/historical/<TICKER>
+curl terminal-stocks.dev/historical/<TICKER>
 ```
 
 Example:
 ```sh
-curl terminal-stocks.shashi.dev/historical/ITC.NS
+curl terminal-stocks.dev/historical/ITC.NS
 ```
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Historical.png" />
 
@@ -56,12 +56,12 @@ curl terminal-stocks.shashi.dev/historical/ITC.NS
 Get the global market summary.
 
 ```sh
-curl terminal-stocks.shashi.dev/market-summary
+curl terminal-stocks.dev/market-summary
 ```
 
 Example:
 ```sh
-curl terminal-stocks.shashi.dev/market-summary
+curl terminal-stocks.dev/market-summary
 ```
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Market.png" />
 
@@ -70,12 +70,12 @@ curl terminal-stocks.shashi.dev/market-summary
 ?> **Tip** You can fetch the market (Sensex, Nify 50, Dow) information also by providing as ticker in current price api
 
  ```sh
-curl terminal-stocks.shashi.dev/<TICKER>
+curl terminal-stocks.dev/<TICKER>
 ```
 
 Example:
 ```sh
-curl terminal-stocks.shashi.dev/^BSENS
+curl terminal-stocks.dev/^BSENS
 ```
 
 ---
