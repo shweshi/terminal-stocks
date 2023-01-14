@@ -34,6 +34,18 @@
     "type": "git",
     "url": "git+https://github.com/shweshi/terminal-stocks.git"
   },
+  "keywords": [
+    "stocks",
+    "yahoo-finance",
+    "market-data",
+    "api",
+    "command-line",
+    "terminal-stocks",
+    "stock-prices",
+    "stock-market",
+    "finance",
+    "terminal"
+  ],
   "bugs": {
     "url": "https://github.com/shweshi/terminal-stocks/issues"
   },
