@@ -98,8 +98,8 @@ function transformCurrentPrice(data) {
         colors.cyan(data[i].price),
         (data[i].change < 0) ? colors.red(data[i].change) : colors.green(data[i].change),
         (data[i].changePercent < 0) ? colors.red(data[i].changePercent) : colors.green(data[i].changePercent),
-        data[i].dayRange,
-        data[i].fiftyTwoWeekRange,
+        showDefaultOutputIfEmpty(data[i].dayRange),
+        showDefaultOutputIfEmpty(data[i].fiftyTwoWeekRange),
       ]
     );
   }
@@ -148,6 +148,13 @@ function transformHistoricalPrices(data) {
     + colors.yellow(`TIP: You can view current price by: curl terminal-stocks.dev/${data.ticker}\n\n`)
     + colors.blue.dim(`DISCLAIMER: For information purpose. Do not use for trading.\n`
       + colors.yellow.dim(`[twitter: @imSPG] [Github: https://github.com/shweshi/terminal-stocks]\n`));
+}
+
+function showDefaultOutputIfEmpty(data) {
+  if (!data)
+    return 'N/A'
+
+  return data
 }
 
 function transformError(error) {
