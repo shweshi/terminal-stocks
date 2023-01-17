@@ -167,19 +167,19 @@ function getPrice(entity) {
 }
 
 function getChange(entity) {
-  return parseFloat(entity.regularMarketChange.fmt);
+  return parseFloat(entity.regularMarketChange?.fmt);
 }
 
 function getChangePercent(entity) {
-  return parseFloat(entity.regularMarketChangePercent.fmt);
+  return parseFloat(entity.regularMarketChangePercent?.fmt);
 }
 
 function getAtDate(entity) {
-  return entity.regularMarketTime.raw;
+  return entity.regularMarketTime?.raw;
 }
 
 function getAtTime(entity) {
-  return entity.regularMarketTime.fmt;
+  return entity.regularMarketTime?.fmt;
 }
 
 function getLongName(entity) {
@@ -191,9 +191,9 @@ function getShortName(entity) {
 }
 
 function getDayRange(entity) {
-  return entity.regularMarketDayRange.fmt;
+  return entity.regularMarketDayRange?.fmt;
 }
 
 function getFiftyTwoWeekRange(entity) {
-  return entity.fiftyTwoWeekRange.fmt;
+  return entity.fiftyTwoWeekRange?.fmt;
 }
