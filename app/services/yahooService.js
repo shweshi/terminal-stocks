@@ -1,5 +1,5 @@
 var request = require('request');
-var CryptoJS = require("crypto-js");
+const yahooFinance = require('yahoo-finance2').default;
 
 const baseUrl = 'https://finance.yahoo.com/quote/';
 const regex = /root.App.main\s*=\s*{(.*)};/g
@@ -29,44 +29,36 @@ function getChart(ticker) {
 }
 
 function getCurrentPrice(tickers) {
+
   const dataPromise = tickers.map((ticker) => {
-    return new Promise(function (resolve, reject) {
-      request(baseUrl + ticker + "/", function (err, res, body) {
+    return new Promise(async function (resolve, reject) {
+      try {
+        var entity = await yahooFinance.quote(ticker)
+        var price = getPrice(entity);
+        var change = getChange(entity);
+        var changePercent = getChangePercent(entity);
+        var atDate = getAtDate(entity);
+        var atTime = getAtTime(entity);
+        var longName = (getLongName(entity)) ? getLongName(entity) : getShortName(entity);
+        var dayRange = getDayRange(entity);
+        var fiftyTwoWeekRange = getFiftyTwoWeekRange(entity);
 
-        if (err) {
-          reject(err);
-        }
+        resolve({
+          ticker,
+          longName,
+          price,
+          change,
+          changePercent,
+          atDate: new Date(atDate).toLocaleString(),
+          atTime,
+          dayRange,
+          fiftyTwoWeekRange,
 
-        try {          
-          var dataStore = getDataStoreAsJson(body)
-          var decryptedDataStore = getDecryptedBody(dataStore)
-          var json = getQuoteData(decryptedDataStore)
-          var entity = json[ticker]
-          var price = getPrice(entity);
-          var change = getChange(entity);
-          var changePercent = getChangePercent(entity);
-          var atDate = getAtDate(entity);
-          var atTime = getAtTime(entity);
-          var longName = (getLongName(entity)) ? getLongName(entity) : getShortName(entity);
-          var dayRange = getDayRange(entity);
-          var fiftyTwoWeekRange = getFiftyTwoWeekRange(entity);
-
-          resolve({
-            ticker,
-            longName,
-            price,
-            change,
-            changePercent,
-            atDate: new Date(atDate * 1000),
-            atTime,
-            dayRange,
-            fiftyTwoWeekRange,
-          });
-        } catch (err) {
-          reject(err)
-        }
-      })
-    });
+        })
+      } catch (err) {
+        reject(err)
+      }
+    })
   });
 
   return Promise.all(dataPromise);
@@ -134,20 +126,14 @@ function getHistoricalPrices(ticker, options) {
 function getDecryptedBody(dataStore) {
   let pwKey = Object.keys(dataStore)[2];
   var password = dataStore[pwKey];
-  
+
   stores = dataStore.context.dispatcher.stores
   var plaintext = CryptoJS.AES.decrypt(stores, password);
   return JSON.parse(decodeURIComponent(escape(CryptoJS.enc.Latin1.stringify(plaintext))));
 }
 
-function getJsonLastElement(json) 
-{
-    let len = json.length
-    return json[len - 1]
-}
-
 function getDataStoreAsJson(body) {
-  return JSON.parse("{"+body.split(regex)[1]+"}")
+  return JSON.parse("{" + body.split(regex)[1] + "}")
 }
 
 function getQuoteData(dataStore) {
@@ -163,23 +149,23 @@ function getMarketSummaryData(dataStore) {
 }
 
 function getPrice(entity) {
-  return entity.regularMarketPrice.fmt;
+  return entity.regularMarketPrice;
 }
 
 function getChange(entity) {
-  return parseFloat(entity.regularMarketChange?.fmt);
+  return parseFloat(entity.regularMarketChange).toFixed(2);
 }
 
 function getChangePercent(entity) {
-  return parseFloat(entity.regularMarketChangePercent?.fmt);
+  return parseFloat(entity.regularMarketChangePercent).toFixed(2);
 }
 
 function getAtDate(entity) {
-  return entity.regularMarketTime?.raw;
+  return entity.regularMarketTime;
 }
 
 function getAtTime(entity) {
-  return entity.regularMarketTime?.fmt;
+  return entity.regularMarketTime;
 }
 
 function getLongName(entity) {
@@ -191,9 +177,9 @@ function getShortName(entity) {
 }
 
 function getDayRange(entity) {
-  return entity.regularMarketDayRange?.fmt;
+  return `${entity.regularMarketDayRange.low} - ${entity.regularMarketDayRange.high}`
 }
 
 function getFiftyTwoWeekRange(entity) {
-  return entity.fiftyTwoWeekRange?.fmt;
+  return `${entity.fiftyTwoWeekRange.low} - ${entity.fiftyTwoWeekRange.high}`
 }
