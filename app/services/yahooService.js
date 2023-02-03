@@ -97,29 +97,23 @@ function getMarketSummary() {
 
 
 function getHistoricalPrices(ticker, options) {
-  return new Promise(function (resolve, reject) {
+  return new Promise(async function (resolve, reject) {
     const { page, limit } = options;
-    request(baseUrl + ticker + "/history", function (err, res, body) {
+    var today = new Date();
+    var prevMonth = new Date(today.getFullYear(), today.getMonth()-1, today.getDate());
+    const queryOptions = { period1: prevMonth.toISOString().slice(0, 10) };
 
-      if (err) {
-        reject(err);
-      }
-
-      try {
-        var dataStore = getDataStoreAsJson(body)
-        var decryptedDataStore = getDecryptedBody(dataStore)
-        var json = getQuoteData(decryptedDataStore)
-        var entity = json[ticker]
-        var longName = (getLongName(entity)) ? getLongName(entity) : getShortName(entity)
-        var jsonPrices = getHistoricalDataFromBodyAsJson(decryptedDataStore)
-
-        const array = jsonPrices.slice((page - 1) * limit, page * limit);
-        resolve({ longName, ticker, array });
-      } catch (err) {
-        reject(err)
-      }
-    });
-  })
+    try {
+      var quote = await yahooFinance.quote(ticker)
+      var jsonPrices = await yahooFinance.historical(ticker, queryOptions)
+      var longName = (getLongName(quote)) ? getLongName(quote) : getShortName(quote)
+      
+      const array = jsonPrices.reverse().slice((page - 1) * limit, page * limit);
+      resolve({ longName, ticker, array });
+    } catch (err) {
+      reject(err)
+    }
+  });
 }
 
 // Helper functions
