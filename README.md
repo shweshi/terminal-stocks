@@ -78,6 +78,7 @@ $ curl terminal-stocks.dev/market-summary
 ### Tech
 * [node.js] - evented I/O for the backend
 * [Express] - fast node.js network app framework [@tjholowaychuk]
+* [node-yahoo-finance2] - community API for Yahoo-Finance
 
 ### Installation
 Requires [Node.js](https://nodejs.org/) v8+ to run.
