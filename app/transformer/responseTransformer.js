@@ -5,6 +5,12 @@ var blessed = require('blessed');
 var contrib = require('blessed-contrib');
 var AU = require('ansi_up');
 
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
+
+
 module.exports = {
   transformCurrentPrice: transformCurrentPrice,
   transformHistoricalPrices: transformHistoricalPrices,
@@ -96,7 +102,7 @@ function transformCurrentPrice(data) {
       [
         data[i].longName,
         colors.cyan(data[i].price),
-        (data[i].change < 0) ? colors.red(data[i].change) : colors.green(data[i].change),
+        (data[i].change < 0) ? colors.red(formatter.format(data[i].change)) : colors.green(formatter.format(data[i].change)),
         (data[i].changePercent < 0) ? colors.red(data[i].changePercent) : colors.green(data[i].changePercent),
         showDefaultOutputIfEmpty(data[i].dayRange),
         showDefaultOutputIfEmpty(data[i].fiftyTwoWeekRange),
@@ -131,13 +137,13 @@ function transformHistoricalPrices(data) {
   data.array.forEach((price) => {
     table.push(
       [
-        new Date(Number(price.date * 1000)).toJSON().split("T")[0],
-        parseFloat(price.open).toFixed(2),
-        parseFloat(price.high).toFixed(2),
-        parseFloat(price.low).toFixed(2),
-        parseFloat(price.close).toFixed(2),
-        parseFloat(price.adjclose).toFixed(2),
-        price.volume
+        price.date.toLocaleString([], {year: 'numeric', month: 'numeric', day: 'numeric'}),
+        formatter.format(parseFloat(price.open).toFixed(2)),
+        formatter.format(parseFloat(price.high).toFixed(2)),
+        formatter.format(parseFloat(price.low).toFixed(2)),
+        formatter.format(parseFloat(price.close).toFixed(2)),
+        formatter.format(parseFloat(price.adjClose).toFixed(2)),
+        formatter.format(price.volume)
       ]
     );
   })
@@ -146,7 +152,7 @@ function transformHistoricalPrices(data) {
     + colors.yellow(`By default it show 10 entries to see the next entries make next call with ?page=2 and next with ?page=3\n\n`)
     + colors.blue(`* Close price adjusted for splits.\n** Adjusted close price adjusted for both dividends and splits.\n\n`)
     + colors.yellow(`TIP: You can view current price by: curl terminal-stocks.dev/${data.ticker}\n\n`)
-    + colors.blue.dim(`DISCLAIMER: For information purpose. Do not use for trading.\n`
+    + colors.blue.dim(`DISCLAIMER: For informational purpose only. Do not use for trading.\n`
       + colors.yellow.dim(`[twitter: @imSPG] [Github: https://github.com/shweshi/terminal-stocks]\n`));
 }
 

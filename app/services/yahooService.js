@@ -4,6 +4,23 @@ const yahooFinance = require('yahoo-finance2').default;
 const baseUrl = 'https://finance.yahoo.com/quote/';
 const regex = /root.App.main\s*=\s*{(.*)};/g
 
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
+
+const dateFormattingOptions = {
+  timeZone: 'UTC',
+  timeZoneName: 'short',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric',
+  hour12: false
+};
+
 module.exports = {
   getCurrentPrice: getCurrentPrice,
   getHistoricalPrices: getHistoricalPrices,
@@ -49,7 +66,7 @@ function getCurrentPrice(tickers) {
           price,
           change,
           changePercent,
-          atDate: new Date(atDate).toLocaleString(),
+          atDate: new Date(atDate).toLocaleDateString('en-US', dateFormattingOptions),
           atTime,
           dayRange,
           fiftyTwoWeekRange,
@@ -100,14 +117,14 @@ function getHistoricalPrices(ticker, options) {
   return new Promise(async function (resolve, reject) {
     const { page, limit } = options;
     var today = new Date();
-    var prevMonth = new Date(today.getFullYear(), today.getMonth()-1, today.getDate());
+    var prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
     const queryOptions = { period1: prevMonth.toISOString().slice(0, 10) };
 
     try {
       var quote = await yahooFinance.quote(ticker)
       var jsonPrices = await yahooFinance.historical(ticker, queryOptions)
       var longName = (getLongName(quote)) ? getLongName(quote) : getShortName(quote)
-      
+
       const array = jsonPrices.reverse().slice((page - 1) * limit, page * limit);
       resolve({ longName, ticker, array });
     } catch (err) {
@@ -134,16 +151,12 @@ function getQuoteData(dataStore) {
   return dataStore.StreamDataStore.quoteData
 }
 
-function getHistoricalDataFromBodyAsJson(dataStore) {
-  return dataStore.HistoricalPriceStore.prices
-}
-
 function getMarketSummaryData(dataStore) {
   return dataStore.MarketSummaryStore.data
 }
 
 function getPrice(entity) {
-  return entity.regularMarketPrice;
+  return formatter.format(entity.regularMarketPrice);
 }
 
 function getChange(entity) {
@@ -171,9 +184,13 @@ function getShortName(entity) {
 }
 
 function getDayRange(entity) {
-  return `${entity.regularMarketDayRange.low} - ${entity.regularMarketDayRange.high}`
+  if (entity.regularMarketDayRange) {
+    return `${formatter.format(entity.regularMarketDayRange.low)} - ${formatter.format(entity.regularMarketDayRange.high)}`
+  }
 }
 
 function getFiftyTwoWeekRange(entity) {
-  return `${entity.fiftyTwoWeekRange.low} - ${entity.fiftyTwoWeekRange.high}`
+  if (entity.fiftyTwoWeekRange) {
+    return `${formatter.format(entity.fiftyTwoWeekRange.low)} - ${formatter.format(entity.fiftyTwoWeekRange.high)}`
+  }
 }
