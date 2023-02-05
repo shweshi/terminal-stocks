@@ -10,7 +10,6 @@ const formatter = new Intl.NumberFormat('en-US', {
   currency: 'USD',
 });
 
-
 module.exports = {
   transformCurrentPrice: transformCurrentPrice,
   transformHistoricalPrices: transformHistoricalPrices,
@@ -22,7 +21,7 @@ module.exports = {
 };
 
 function transformChart(data) {
-  var time = data.timestamp.map((t) => { return new Date(t * 1000).toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true }) });
+  var time = data.timestamp.map((t) => { return new Date().toLocaleString('en-UK', {year: 'numeric', month: 'short', day: 'numeric'}) });
 
   const screen = blessed.screen()
   const line = contrib.line(
@@ -137,7 +136,7 @@ function transformHistoricalPrices(data) {
   data.array.forEach((price) => {
     table.push(
       [
-        price.date.toLocaleString([], {year: 'numeric', month: 'numeric', day: 'numeric'}),
+        price.date.toLocaleString('en-UK', {year: 'numeric', month: 'short', day: 'numeric'}),
         formatter.format(parseFloat(price.open).toFixed(2)),
         formatter.format(parseFloat(price.high).toFixed(2)),
         formatter.format(parseFloat(price.low).toFixed(2)),
