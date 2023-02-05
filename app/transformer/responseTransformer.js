@@ -69,7 +69,7 @@ function transformMarketSummary(array) {
         colors.cyan(data.price),
         (data.change < 0) ? colors.red(data.change) : colors.green(data.change),
         (data.changePercent < 0) ? colors.red(data.changePercent + '%') : colors.green(data.changePercent + '%'),
-        colors.grey(new Date(Number(data.atDate * 1000)).toJSON().split("T")[0]),
+        colors.grey(data.atDate),
       ]
     );
   });

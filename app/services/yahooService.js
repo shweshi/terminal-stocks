@@ -1,8 +1,9 @@
 var request = require('request');
 const yahooFinance = require('yahoo-finance2').default;
 
-const baseUrl = 'https://finance.yahoo.com/quote/';
+const baseUrl = 'https://finance.yahoo.com/quote/'
 const regex = /root.App.main\s*=\s*{(.*)};/g
+const marketSummaryTickers = '^GSPC, ^DJI, ^IXIC, ^RUT, CL=F, GC=F, SI=F, EURUSD=X, GBPUSD=X, JPY=X, BTC-USD, ^CMC200, ^FTSE, ^N225'
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -66,7 +67,7 @@ function getCurrentPrice(tickers) {
           price,
           change,
           changePercent,
-          atDate: new Date(atDate).toLocaleDateString('en-US', dateFormattingOptions),
+          atDate,
           atTime,
           dayRange,
           fiftyTwoWeekRange,
@@ -82,33 +83,24 @@ function getCurrentPrice(tickers) {
 }
 
 function getMarketSummary() {
-  return new Promise(function (resolve, reject) {
-    request(baseUrl, function (err, res, body) {
-
-      if (err) {
-        reject(err);
+  let tickers = marketSummaryTickers.split(',').map((ticker) => ticker.trim())
+  return new Promise(async function (resolve, reject) {
+    try {
+      var entities = await yahooFinance.quote(tickers)
+      var data = [];
+      for (let entity of entities) {
+        var shortName = (getShortName(entity)) ? getShortName(entity) : getLongName(entity);
+        shortName = (shortName) ? shortName : entity.symbol;
+        var price = getPrice(entity);
+        var change = getChange(entity);
+        var changePercent = getChangePercent(entity);
+        var atDate = getAtDate(entity);
+        data.push({ ticker: entity.symbol, shortName, price, change, changePercent, atDate });
       }
-
-      try {
-        var dataStore = getDataStoreAsJson(body)
-        var decryptedDataStore = getDecryptedBody(dataStore)
-        var jsonMarketSummary = getMarketSummaryData(decryptedDataStore)
-        var jsonMarketPrices = getQuoteData(decryptedDataStore)
-        var data = [];
-        for (let entity of jsonMarketSummary) {
-          var shortName = (getShortName(jsonMarketPrices[entity.symbol])) ? getShortName(jsonMarketPrices[entity.symbol]) : getLongName(jsonMarketPrices[entity.symbol]);
-          shortName = (shortName) ? shortName : entity.symbol;
-          var price = getPrice(jsonMarketPrices[entity.symbol]);
-          var change = getChange(jsonMarketPrices[entity.symbol]);
-          var changePercent = getChangePercent(jsonMarketPrices[entity.symbol]);
-          var atDate = getAtDate(jsonMarketPrices[entity.symbol]);
-          data.push({ ticker: entity.symbol, shortName, price, change, changePercent, atDate });
-        }
-        resolve(data);
-      } catch (err) {
-        reject(err)
-      }
-    });
+      resolve(data);
+    } catch (err) {
+      reject(err)
+    }
   });
 }
 
@@ -133,28 +125,6 @@ function getHistoricalPrices(ticker, options) {
   });
 }
 
-// Helper functions
-function getDecryptedBody(dataStore) {
-  let pwKey = Object.keys(dataStore)[2];
-  var password = dataStore[pwKey];
-
-  stores = dataStore.context.dispatcher.stores
-  var plaintext = CryptoJS.AES.decrypt(stores, password);
-  return JSON.parse(decodeURIComponent(escape(CryptoJS.enc.Latin1.stringify(plaintext))));
-}
-
-function getDataStoreAsJson(body) {
-  return JSON.parse("{" + body.split(regex)[1] + "}")
-}
-
-function getQuoteData(dataStore) {
-  return dataStore.StreamDataStore.quoteData
-}
-
-function getMarketSummaryData(dataStore) {
-  return dataStore.MarketSummaryStore.data
-}
-
 function getPrice(entity) {
   return formatter.format(entity.regularMarketPrice);
 }
@@ -168,7 +138,7 @@ function getChangePercent(entity) {
 }
 
 function getAtDate(entity) {
-  return entity.regularMarketTime;
+return new Date(entity.regularMarketTime).toLocaleDateString('en-US', dateFormattingOptions)
 }
 
 function getAtTime(entity) {
