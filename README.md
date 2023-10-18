@@ -1,6 +1,6 @@
 # terminal-stocks
 
-terminal-stocks is a terminal based application that provides stock price information.
+terminal-stocks is a terminal first application that provides stock price information.
 Read more here: https://blog.shashi.dev/2021/01/track-stock-market-information-right-in.html
 
 <img alt="terminal-stocks" src="https://raw.githubusercontent.com/shweshi/terminal-stocks/main/screenshots/Screenshot_Current.png" />
