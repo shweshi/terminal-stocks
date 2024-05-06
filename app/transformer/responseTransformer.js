@@ -88,7 +88,8 @@ function transformCurrentPrice(data) {
       colors.yellow('Change'),
       colors.yellow('% Change'),
       colors.yellow('Day Range'),
-      colors.yellow('52 Week Range')
+      colors.yellow('52 Week Range'),
+      colors.yellow('Market State')
     ],
     style: {
       head: []
@@ -105,6 +106,7 @@ function transformCurrentPrice(data) {
         (data[i].changePercent < 0) ? colors.red(data[i].changePercent) : colors.green(data[i].changePercent),
         showDefaultOutputIfEmpty(data[i].dayRange),
         showDefaultOutputIfEmpty(data[i].fiftyTwoWeekRange),
+        (data[i].marketState === "open") ? colors.green("open") : colors.red("closed"),
       ]
     );
   }

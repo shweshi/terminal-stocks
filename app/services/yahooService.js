@@ -60,6 +60,7 @@ function getCurrentPrice(tickers) {
         var longName = (getLongName(entity)) ? getLongName(entity) : getShortName(entity);
         var dayRange = getDayRange(entity);
         var fiftyTwoWeekRange = getFiftyTwoWeekRange(entity);
+        var marketState = getMarketState(entity)
 
         resolve({
           ticker,
@@ -71,6 +72,7 @@ function getCurrentPrice(tickers) {
           atTime,
           dayRange,
           fiftyTwoWeekRange,
+          marketState
 
         })
       } catch (err) {
@@ -162,5 +164,11 @@ function getDayRange(entity) {
 function getFiftyTwoWeekRange(entity) {
   if (entity.fiftyTwoWeekRange) {
     return `${formatter.format(entity.fiftyTwoWeekRange.low)} - ${formatter.format(entity.fiftyTwoWeekRange.high)}`
+  }
+}
+
+function getMarketState(entity) {
+  if( entity.marketState) {
+    return (entity.marketState === "REGULAR") ? "open" : "closed" 
   }
 }
