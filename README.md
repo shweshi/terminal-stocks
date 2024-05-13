@@ -45,6 +45,7 @@ terminal-stocks --help // to get help
 terminal-stocks --version  // to see the version
 terminal-stocks -t [ticker] // to see current price information of the stock
 terminal-stocks --ticker [ticker] // to see current price information of the stock
+terminal-stocks --ticker -ms [ticker] // to see current price information of the stock, including market state (open/closed)
 terminal-stocks -t [ticker] --historical [domain] // to see the historical price information of stock
 terminal-stocks --tickers ITC.NS,INFY.NS // to get the current prices of the multiple stocks
 terminal-stocks -m // to see the market summary
