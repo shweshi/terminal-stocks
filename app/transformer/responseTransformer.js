@@ -21,7 +21,7 @@ module.exports = {
 };
 
 function transformChart(data) {
-  var time = data.timestamp.map((t) => { return new Date().toLocaleString('en-UK', {year: 'numeric', month: 'short', day: 'numeric'}) });
+  var time = data.timestamp.map((t) => { return new Date().toLocaleString('en-UK', { year: 'numeric', month: 'short', day: 'numeric' }) });
 
   const screen = blessed.screen()
   const line = contrib.line(
@@ -80,7 +80,7 @@ function transformMarketSummary(array) {
       + colors.yellow.dim(`[twitter: @imSPG] [Github: https://github.com/shweshi/terminal-stocks]\n\n`));
 }
 
-function transformCurrentPrice(data) {
+function transformCurrentPrice(data, options) {
   var table = new Table({
     head: [
       colors.yellow('Stock Name'),
@@ -89,12 +89,15 @@ function transformCurrentPrice(data) {
       colors.yellow('% Change'),
       colors.yellow('Day Range'),
       colors.yellow('52 Week Range'),
-      colors.yellow('Market State')
     ],
     style: {
       head: []
     },
   });
+
+  if (options.ms === true) {
+    table.options.head.push(colors.yellow('Market State'))
+  }
 
   for (let i = 0; i < data.length; i++) {
     const hex = (data[i].change > 0) ? '008000' : 'FF0000';
@@ -106,9 +109,13 @@ function transformCurrentPrice(data) {
         (data[i].changePercent < 0) ? colors.red(data[i].changePercent) : colors.green(data[i].changePercent),
         showDefaultOutputIfEmpty(data[i].dayRange),
         showDefaultOutputIfEmpty(data[i].fiftyTwoWeekRange),
-        (data[i].marketState === "open") ? colors.green("open") : colors.red("closed"),
       ]
     );
+
+    if (options.ms === true) {
+      table[i].push(
+        showMarketStateIfRequested(data[i]))
+    };
   }
 
   return '\n' + table.toString() + '\n' + colors.grey(colors.grey(data[0].atDate)) + '\n\n'
@@ -138,7 +145,7 @@ function transformHistoricalPrices(data) {
   data.array.forEach((price) => {
     table.push(
       [
-        price.date.toLocaleString('en-UK', {year: 'numeric', month: 'short', day: 'numeric'}),
+        price.date.toLocaleString('en-UK', { year: 'numeric', month: 'short', day: 'numeric' }),
         formatter.format(parseFloat(price.open).toFixed(2)),
         formatter.format(parseFloat(price.high).toFixed(2)),
         formatter.format(parseFloat(price.low).toFixed(2)),
@@ -162,6 +169,13 @@ function showDefaultOutputIfEmpty(data) {
     return 'N/A'
 
   return data
+}
+
+function showMarketStateIfRequested(data) {
+  if (!data)
+    return
+
+  return (data.marketState === "open") ? colors.green("open") : colors.red("closed")
 }
 
 function transformError(error) {

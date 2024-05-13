@@ -20,7 +20,7 @@ function fetchCurrentPrice(tickers, options = {}) {
                 csvService.csvExport(data);
                 console.log(responseTransformer.transformExportCsvSuccess())
             } else {
-                console.log(responseTransformer.transformCurrentPrice(data));
+                console.log(responseTransformer.transformCurrentPrice(data, options));
             }
         }).catch((error) => {
             console.log(responseTransformer.transformError(error));
