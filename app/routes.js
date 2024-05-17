@@ -13,10 +13,17 @@ module.exports = function (app) {
 
   app.get('/:tickers', function (req, res) {
     const tickers = req.params.tickers.split(',').map((ticker) => ticker.trim());
+    const ms = req.query.ms ? req.query.ms.toLowerCase() : undefined;
+    var options = {};
+
+    // check to see if market state param was set
+    if (ms === 'true') {
+      options = { ms: true };
+    }
 
     yahooService.getCurrentPrice(tickers)
       .then((data) => {
-        res.send(responseTransformer.transformCurrentPrice(data));
+        res.send(responseTransformer.transformCurrentPrice(data, options));
       }).catch((error) => {
         res.send(responseTransformer.transformError(error));
       });

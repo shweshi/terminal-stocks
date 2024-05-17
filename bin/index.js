@@ -3,8 +3,8 @@
 const stocksCli = require('../cli/stocksCli')
 
 var argv = require('yargs/yargs')(process.argv.slice(2))
-    .usage('Usage: $0 -ticker [string] --historical [boolean]')
-    .example('$0 -ticker <ticker> --historical', 'returns the price information of given ticker')
+    .usage('Usage: $0 -ticker [string] --historical [boolean] --ms [boolean]')
+    .example('$0 -ticker <ticker> --historical', 'returns the price information of a given ticker')
     .usage('Usage: $0 -market [boolean]')
     .example('$0 -market', 'returns the market summary')
     .usage('Usage: $0 --tickers [comma separated string]')
@@ -18,6 +18,7 @@ var argv = require('yargs/yargs')(process.argv.slice(2))
     .describe('historical', 'To get historical price information of the stock')
     .describe('json', 'To export the data as json')
     .describe('csv', 'To export the data csv')
+    .describe('ms', 'To display the current state (open/closed) of the stock market for a ticker')
     .help('h')
     .alias('h', 'help')
     .alias('v', 'version')
@@ -29,6 +30,10 @@ if (argv.json) {
     options.export = 'json';
 } else if (argv.csv) {
     options.export = 'csv';
+}
+
+if (argv.ms) {
+    options.ms = true;
 }
 
 if (argv.tickers) {
