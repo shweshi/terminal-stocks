@@ -2,7 +2,7 @@
 
 All notable will be documented in this file.
 
-## 1.0.19 - 2024-05-17
+## 1.0.18 - 2024-05-17
 - Feature: Add optional market state property to modify output
 
 ## 1.0.17 - 2024-04-18
