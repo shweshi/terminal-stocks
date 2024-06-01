@@ -1,6 +1,6 @@
 {
   "name": "terminal-stocks",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "Fetch stock price information on terminal",
   "main": "index.js",
   "bin": {
@@ -17,7 +17,7 @@
     "express": "^4.19.2",
     "jsonexport": "^3.2.0",
     "request": "^2.88.2",
-    "yahoo-finance2": "^2.11.2",
+    "yahoo-finance2": "^2.11.3",
     "yargs": "^16.2.0"
   },
   "scripts": {
