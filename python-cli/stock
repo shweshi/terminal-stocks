@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+"""stock CLI - 简洁股价查询
+
+基于 terminal-stocks web API
+https://github.com/shweshi/terminal-stocks
+"""
+
+import sys, urllib.request, re
+
+def main():
+    if len(sys.argv) < 2:
+        print("用法: stock <代码>")
+        sys.exit(1)
+    
+    ticker = sys.argv[1].upper()
+    url = f"https://terminal-stocks.dev/{ticker}"
+    
+    try:
+        with urllib.request.urlopen(url, timeout=10) as f:
+            raw = f.read().decode('utf-8')
+    except Exception as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+    
+    raw = re.sub(r'\x1b\[[0-9;]*m', '', raw)
+    
+    print(f"{'代码':<10} {'价格':>10}  {'涨跌':>8} {'涨跌幅':>10}  日内区间")
+    print("-" * 55)
+    
+    for line in raw.split('\n'):
+        if not line.startswith('│'):
+            continue
+        parts = line.split('│')
+        if len(parts) < 6:
+            continue
+        
+        name = parts[1].strip().split()[0][:10]
+        price = parts[2].strip()
+        change = parts[3].strip()
+        pct = parts[4].strip()
+        day = parts[5].strip()
+        
+        if not price.startswith('$'):
+            continue
+        
+        if change.startswith('-'):
+            col = '\033[31m'
+        else:
+            col = '\033[32m'
+        
+        print(f"{name:<10} {price:>10}  {col}{change:>8}\033[0m ({pct:>8})  {day}")
+    
+    m = re.search(r'UTC.*?\d{4}', raw)
+    if m:
+        print("-" * 55)
+        print(f"📈 {m.group().replace('UTC ', '')}")
+
+if __name__ == "__main__":
+    main()
