@@ -17,7 +17,7 @@
     "express": "^4.19.2",
     "jsonexport": "^3.2.0",
     "request": "^2.88.2",
-    "yahoo-finance2": "^2.12.4",
+    "yahoo-finance2": "^3.11.2",
     "yargs": "^16.2.0"
   },
   "scripts": {

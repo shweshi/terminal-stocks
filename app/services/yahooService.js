@@ -1,5 +1,12 @@
 var request = require('request');
-const yahooFinance = require('yahoo-finance2').default;
+
+const YahooFinance = require("yahoo-finance2").default;
+
+const yahooFinance = new YahooFinance({
+  suppressNotices: ["yahooSurvey"]
+  // you can add other options here if needed
+});
+
 
 const baseUrl = 'https://finance.yahoo.com/quote/'
 const regex = /root.App.main\s*=\s*{(.*)};/g
