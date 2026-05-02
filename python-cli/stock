@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+"""stock CLI - Terminal stock price lookup
+
+Features:
+- Current price for multiple tickers
+- Market summary (-m)
+- Market status query (-s)
+- JSON export (-j)
+
+Based on terminal-stocks.dev API by shweshi
+https://github.com/shweshi/terminal-stocks
+"""
+
+import sys, urllib.request, re, json, argparse
+
+BASE_URL = "https://terminal-stocks.dev"
+
+def get_data(path):
+    """Fetch data from terminal-stocks API"""
+    url = f"{BASE_URL}/{path}"
+    with urllib.request.urlopen(url, timeout=10) as f:
+        return f.read().decode('utf-8')
+
+def parse_table(raw):
+    """Parse table output from API"""
+    raw = re.sub(r'\x1b\[[0-9;]*m', '', raw)
+    results = []
+    for line in raw.split('\n'):
+        if not line.startswith('│'):
+            continue
+        parts = line.split('│')
+        if len(parts) < 6:
+            continue
+        name = parts[1].strip()
+        price = parts[2].strip()
+        change = parts[3].strip()
+        pct = parts[4].strip()
+        day = parts[5].strip()
+        
+        if price.startswith('$'):
+            results.append({
+                'name': name,
+                'price': price,
+                'change': change,
+                'pct': pct,
+                'day_range': day
+            })
+    return results
+
+def format_table(data, raw):
+    """Print table format output"""
+    print(f"{'Ticker':<10} {'Price':>10}  {'Change':>8} {'% Change':>10}  Day Range")
+    print("-" * 55)
+    for row in data:
+        name = row['name'].split()[0][:10]
+        price = row['price']
+        change = row['change']
+        pct = row['pct']
+        day = row['day_range']
+        
+        # Color: red for down, green for up
+        col = '\033[31m' if change.startswith('-') else '\033[32m'
+        print(f"{name:<10} {price:>10}  {col}{change:>8}\033[0m ({pct:>8})  {day}")
+    
+    # Timestamp
+    m = re.search(r'UTC.*?[0-9]{4}', raw)
+    if m:
+        print("-" * 55)
+        print(f"Updated: {m.group()}")
+
+def show_market_summary():
+    """Show market summary (indices, commodities, crypto)"""
+    raw = get_data("market-summary")
+    raw = re.sub(r'\x1b\[[0-9;]*m', '', raw)
+    
+    print("=== Market Summary ===\n")
+    for line in raw.split('\n'):
+        if not line.startswith('│') or line.startswith('│ Stock'):
+            continue
+        if '│' in line:
+            parts = line.split('│')
+            name = parts[1].strip()[:20]
+            price = parts[2].strip()
+            change = parts[3].strip()
+            pct = parts[4].strip()
+            if price.startswith('$'):
+                print(f"{name:<20} {price:>10}  {change:>8} ({pct:>6})")
+
+def show_market_status(symbol):
+    """Show market open/closed status"""
+    raw = get_data(symbol)
+    raw_clean = re.sub(r'\x1b\[[0-9;]*m', '', raw)
+    
+    # Check for market status in output
+    if "market open" in raw_clean.lower() or "is_market_open" in raw_clean.lower():
+        status = "OPEN \033[32m●\033[0m"
+    else:
+        status = "CLOSED \033[31m●\033[0m"
+    
+    print(f"Market Status: {status}")
+
+def main():
+    parser = argparse.ArgumentParser(description='stock CLI - terminal stock price lookup')
+    parser.add_argument('ticker', nargs='?', help='Stock ticker (e.g., MSFT, AAPL)')
+    parser.add_argument('-m', '--market', action='store_true', help='Show market summary')
+    parser.add_argument('-s', '--status', action='store_true', help='Show market status')
+    parser.add_argument('-j', '--json', action='store_true', help='Output as JSON')
+    
+    args = parser.parse_args()
+    
+    # Market summary
+    if args.market:
+        show_market_summary()
+        return
+    
+    # Market status
+    if args.status and args.ticker:
+        show_market_status(args.ticker)
+        return
+    
+    # Default: current price
+    if not args.ticker:
+        parser.print_help()
+        return
+    
+    raw = get_data(args.ticker)
+    data = parse_table(raw)
+    
+    if args.json:
+        print(json.dumps(data, indent=2))
+    else:
+        format_table(data, raw)
+
+if __name__ == "__main__":
+    main()
